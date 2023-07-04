@@ -43,6 +43,7 @@ namespace PDFPreview
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.changePdfButton = new System.Windows.Forms.Button();
             this.changeSignatureButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.xNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sizeNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.yNumeric)).BeginInit();
@@ -85,6 +86,8 @@ namespace PDFPreview
             this.pdfViewer1.UseProgressiveRender = true;
             this.pdfViewer1.ViewMode = Patagames.Pdf.Net.Controls.WinForms.ViewModes.Vertical;
             this.pdfViewer1.Zoom = 1F;
+            this.pdfViewer1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pdfViewer1_MouseDown);
+            this.pdfViewer1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pdfViewer1_MouseUp);
             // 
             // xNumeric
             // 
@@ -175,11 +178,21 @@ namespace PDFPreview
             this.changeSignatureButton.UseVisualStyleBackColor = true;
             this.changeSignatureButton.Click += new System.EventHandler(this.changeSignatureButton_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(585, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 13);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "label3";
+            // 
             // PdfPreview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.changeSignatureButton);
             this.Controls.Add(this.changePdfButton);
             this.Controls.Add(this.saveButton);
@@ -219,6 +232,7 @@ namespace PDFPreview
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.Button changePdfButton;
         private System.Windows.Forms.Button changeSignatureButton;
+        private System.Windows.Forms.Label label3;
     }
 }
 

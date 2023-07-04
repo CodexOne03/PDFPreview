@@ -55,6 +55,7 @@ namespace PDFPreview
 
         private void UpdatePdf()
         {
+            var scroll = pdfViewer1.VerticalScroll.Value;
             pdf = PdfReader.Open(pdfPath, PdfDocumentOpenMode.Modify);
             var page = pdf.Pages[Convert.ToInt32(pageNumeric.Value - 1)];
             var gfx = XGraphics.FromPdfPage(page);
@@ -67,12 +68,14 @@ namespace PDFPreview
                 pdfViewer1.CloseDocument();
             }
             pdfViewer1.LoadDocument(stream);
+            pdfViewer1.VerticalScroll.Value = scroll;
+            pdfViewer1.AutoScrollPosition = new Point(pdfViewer1.HorizontalScroll.Value, scroll);
         }
 
         private void ControlValueChanged(object sender, EventArgs e)
         {
             UpdatePdf();
-            pdfViewer1.ScrollToPage(Convert.ToInt32(pageNumeric.Value - 1));
+            //pdfViewer1.ScrollToPage(Convert.ToInt32(pageNumeric.Value - 1));
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -134,6 +137,46 @@ namespace PDFPreview
 
                 UpdatePdf();
             }
+        }
+
+        Point startingMousePoint;
+        private void pdfViewer1_MouseDown(object sender, MouseEventArgs e)
+        {
+            startingMousePoint = e.Location;
+        }
+
+        private void pdfViewer1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (startingMousePoint != null)
+            {
+                Point size = new Point(Math.Abs(e.Location.X - startingMousePoint.X), Math.Abs(e.Location.Y - startingMousePoint.Y));
+                if (e.Location.X < startingMousePoint.X && e.Location.Y < startingMousePoint.Y)
+                {
+                    HandleMouseClickPlacement(e.Location, size);
+                }
+                else if (e.Location.X < startingMousePoint.X && e.Location.Y > startingMousePoint.Y)
+                {
+                    HandleMouseClickPlacement(new Point(e.Location.X, startingMousePoint.Y), size);
+                }
+                else if (e.Location.X > startingMousePoint.X && e.Location.Y < startingMousePoint.Y)
+                {
+                    HandleMouseClickPlacement(new Point(startingMousePoint.X, e.Location.Y), size);
+                }
+                else if (e.Location.X > startingMousePoint.X && e.Location.Y > startingMousePoint.Y)
+                {
+                    HandleMouseClickPlacement(startingMousePoint, size);
+                }
+            }
+        }
+
+        private void HandleMouseClickPlacement(Point location, Point size)
+        {
+            var page = pdfViewer1.PointInPage(location);
+            var pagePoint = pdfViewer1.ClientToPage(page, location);
+            this.xNumeric.Value = (decimal)Math.Min(Math.Max(pagePoint.X, 0), pdfViewer1.Size.Width);
+            this.yNumeric.Value = (decimal)Math.Min(Math.Max(pdfViewer1.Document.Pages[0].Height - pagePoint.Y, 0), pdfViewer1.Size.Width);
+            this.sizeNumeric.Value = (decimal)this.pdfViewer1.ClientToPage(page, size).X;
+            this.pageNumeric.Value = (decimal)page + 1;
         }
     }
 }
